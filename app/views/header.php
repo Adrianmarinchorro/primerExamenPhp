@@ -67,10 +67,19 @@
                             <button type="submit" class="btn btn-light"><i class="fas fa-search"></i></button>
                         </form>
                     </li>
-                    <li class="nav-item">
-                        <a href="<?= ROOT ?>shop/logout" class="nav-link">Salir</a>
-                    </li>
-                    <?php if(isset($_SESSION['isAdmin']) && $_SESSION['isAdmin']): ?>
+                    <?php if (!isset($_SESSION['user'])): ?>
+                        <li class="nav-item">
+                            <a href="<?= ROOT ?>login" class="nav-link">login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="<?= ROOT ?>login/registro" class="nav-link">register</a>
+                        </li>
+                    <?php else: ?>
+                        <li class="nav-item">
+                            <a href="<?= ROOT ?>shop/logout" class="nav-link">Salir</a>
+                        </li>
+                    <?php endif; ?>
+                    <?php if (isset($_SESSION['isAdmin']) && $_SESSION['isAdmin']): ?>
                     <li class="nav-item">
                         <a href="<?= ROOT ?>adminShop" class="nav-link">Administrar</a>
                         <?php endif; ?>

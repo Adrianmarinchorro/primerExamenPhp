@@ -15,8 +15,8 @@ class Application
         $this->separarUrl();
 
         if ( ! $this->urlController ) {
-            require_once '../app/controllers/LoginController.php';
-            $page = new LoginController();
+            require_once '../app/controllers/ShopController.php';
+            $page = new ShopController();
             $page->index();
         } elseif (file_exists('../app/controllers/' . ucfirst($this->urlController) . 'Controller.php')) {
             $controller = ucfirst($this->urlController) . 'Controller';
