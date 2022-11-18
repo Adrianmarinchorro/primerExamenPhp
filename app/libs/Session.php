@@ -14,6 +14,7 @@ class Session
             $this->user = $_SESSION['user'];
             $this->login = true;
             $_SESSION['cartTotal'] = $this->cartTotal();
+            $_SESSION['isAdmin'] = $this->isAdminUser();
             $this->cartTotal = $_SESSION['cartTotal'];
         } else {
             unset($this->user);
@@ -66,5 +67,19 @@ class Session
         unset($db);
 
         return ($data->total ?? 0);
+    }
+
+    public function isAdminUser()
+    {
+        $db = Mysqldb::getInstance()->getDatabase();
+
+        $sql = 'SELECT is_admin FROM users WHERE id=:user_id';
+        $query = $db->prepare($sql);
+        $query->execute([':user_id' => $this->getUserId()]);
+        $data = $query->fetch(PDO::FETCH_OBJ);
+        unset($db);
+
+        return ($data->is_admin ?? 0);
+
     }
 }

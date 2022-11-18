@@ -70,6 +70,11 @@
                     <li class="nav-item">
                         <a href="<?= ROOT ?>shop/logout" class="nav-link">Salir</a>
                     </li>
+                    <?php if(isset($_SESSION['isAdmin']) && $_SESSION['isAdmin']): ?>
+                    <li class="nav-item">
+                        <a href="<?= ROOT ?>adminShop" class="nav-link">Administrar</a>
+                        <?php endif; ?>
+                    </li>
                 </ul>
             </div>
         <?php endif; ?>
