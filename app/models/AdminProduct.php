@@ -9,6 +9,15 @@ class AdminProduct
         $this->db = Mysqldb::getInstance()->getDatabase();
     }
 
+    public function getProductsList()
+    {
+        $sql = 'SELECT id, type, name, substring(description, 1,30) AS description FROM products WHERE deleted=0';
+        $query = $this->db->prepare($sql);
+        $query->execute();
+
+        return $query->fetchAll(PDO::FETCH_OBJ);
+    }
+
     public function getProducts()
     {
         $sql = 'SELECT * FROM products WHERE deleted=0';

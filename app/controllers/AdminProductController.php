@@ -15,7 +15,7 @@ class AdminProductController extends Controller
 
         if ($session->getLogin()) {
 
-            $products = $this->model->getProducts();
+            $products = $this->model->getProductsList();
             $type = $this->model->getConfig('productType');
 
             $data = [
