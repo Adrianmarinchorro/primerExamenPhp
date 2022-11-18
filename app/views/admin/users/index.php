@@ -19,7 +19,7 @@
                         <td class="text-center"><?= $user->name ?></td>
                         <td class="text-center"><?= $user->email ?></td>
                         <td class="text-center">
-                            <a href="<?= ROOT ?>adminUser/update/<?= $user->id ?>"
+                            <a href="<?= ROOT ?>adminUser/edit/<?= $user->id ?>"
                                 class="btn btn-info"
                             >Editar</a>
                         </td>

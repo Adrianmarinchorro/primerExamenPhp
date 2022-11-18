@@ -31,130 +31,81 @@ class AdminUserController extends Controller
 
     }
 
-    public function create()
+    public function create($dataForm = [], $errors = [])
     {
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $data = [
+            'titulo' => 'Administración de Usuarios - Alta',
+            'menu' => false,
+            'admin' => true,
+            'errors' => $errors,
+            'data' => $dataForm,
+        ];
 
-            $errors = [];
+        $this->view('admin/users/create', $data);
 
-            $name = $_POST['name'] ?? '';
-            $email = $_POST['email'] ?? '';
-            $password1 = $_POST['password1'] ?? '';
-            $password2 = $_POST['password2'] ?? '';
+    }
 
-            $dataForm = [
-                'name' => $name,
-                'email' => $email,
-                'password' => $password1,
-            ];
+    public function store()
+    {
+        $errors = [];
 
-            if (empty($name)) {
-                array_push($errors, 'El nombre de usuario es requerido');
-            }
-            if (empty($email)) {
-                array_push($errors, 'El correo electrónico de usuario es requerido');
-            }
-            if (empty($password1)) {
-                array_push($errors, 'La clave de acceso es requerida');
-            }
-            if (empty($password2)) {
-                array_push($errors, 'La verificación de clave es requerida');
-            }
-            if ($password1 != $password2) {
-                array_push($errors, 'Las claves no coinciden');
-            }
+        $name = $_POST['name'] ?? '';
+        $email = $_POST['email'] ?? '';
+        $password1 = $_POST['password1'] ?? '';
+        $password2 = $_POST['password2'] ?? '';
 
-            if ( ! $errors) {
+        $dataForm = [
+            'name' => $name,
+            'email' => $email,
+            'password' => $password1,
+        ];
 
-                if ($this->model->createAdminUser($dataForm)) {
-                    header("location:" . ROOT . 'adminUser');
-                } else {
+        if (empty($name)) {
+            array_push($errors, 'El nombre de usuario es requerido');
+        }
+        if (empty($email)) {
+            array_push($errors, 'El correo electrónico de usuario es requerido');
+        }
+        if (empty($password1)) {
+            array_push($errors, 'La clave de acceso es requerida');
+        }
+        if (empty($password2)) {
+            array_push($errors, 'La verificación de clave es requerida');
+        }
+        if ($password1 != $password2) {
+            array_push($errors, 'Las claves no coinciden');
+        }
 
-                    $data = [
-                        'titulo' => 'Error en la creación de un usuario administrador',
-                        'menu' => false,
-                        'errors' => [],
-                        'subtitle' => 'Error al crear un nuevo usuario administrador',
-                        'text' => 'Se ha producido un error durante el proceso de creación de un usuario administrador',
-                        'color' => 'alert-danger',
-                        'url' => 'adminUser',
-                        'colorButton' => 'btn-danger',
-                        'textButton' => 'Volver',
-                    ];
-                    $this->view('mensaje', $data);
+        if (!$errors) {
 
-                }
-
+            if ($this->model->createAdminUser($dataForm)) {
+                header("location:" . ROOT . 'adminUser');
             } else {
 
                 $data = [
-                    'titulo' => 'Administración de Usuarios - Alta',
+                    'titulo' => 'Error en la creación de un usuario administrador',
                     'menu' => false,
-                    'admin' => true,
-                    'errors' => $errors,
-                    'data' => $dataForm,
+                    'errors' => [],
+                    'subtitle' => 'Error al crear un nuevo usuario administrador',
+                    'text' => 'Se ha producido un error durante el proceso de creación de un usuario administrador',
+                    'color' => 'alert-danger',
+                    'url' => 'adminUser',
+                    'colorButton' => 'btn-danger',
+                    'textButton' => 'Volver',
                 ];
-
-                $this->view('admin/users/create', $data);
+                $this->view('mensaje', $data);
 
             }
 
         } else {
 
-            $data = [
-                'titulo' => 'Administración de Usuarios - Alta',
-                'menu' => false,
-                'admin' => true,
-                'data' => [],
-            ];
-
-            $this->view('admin/users/create', $data);
+            $this->create($dataForm, $errors);
 
         }
     }
 
-    public function update($id)
+    public function edit($id, $errors = [])
     {
-        $errors = [];
-
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-
-            $name = $_POST['name'] ?? '';
-            $email = $_POST['email'] ?? '';
-            $password1 = $_POST['password1'] ?? '';
-            $password2 = $_POST['password2'] ?? '';
-            $status = $_POST['status'] ?? '';
-
-            if ($name == '') {
-                array_push($errors, 'El nombre del usuario es requerido');
-            }
-            if ($email == '') {
-                array_push($errors, 'El email es requerido');
-            }
-            if ($status == '') {
-                array_push($errors, 'Selecciona un estado para el usuario');
-            }
-            if ( ! empty($password1) || ! empty($password2)) {
-                if ($password1 != $password2) {
-                    array_push($errors, 'Las contraseñas no coinciden');
-                }
-            }
-
-            if ( ! $errors ) {
-                $data = [
-                    'id' => $id,
-                    'name' => $name,
-                    'email' => $email,
-                    'password' => $password1,
-                    'status' => $status,
-                ];
-                $errors = $this->model->setUser($data);
-                if ( ! $errors ) {
-                    header("location:" . ROOT . 'adminUser');
-                }
-            }
-        }
-
         $user = $this->model->getUserById($id);
         $status = $this->model->getConfig('adminStatus');
 
@@ -170,19 +121,50 @@ class AdminUserController extends Controller
         $this->view('admin/users/update', $data);
     }
 
-    public function delete($id)
+    public function update($id)
     {
         $errors = [];
 
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $name = $_POST['name'] ?? '';
+        $email = $_POST['email'] ?? '';
+        $password1 = $_POST['password1'] ?? '';
+        $password2 = $_POST['password2'] ?? '';
+        $status = $_POST['status'] ?? '';
 
-            $errors = $this->model->delete($id);
-
-            if ( ! $errors ) {
-                header('location:' . ROOT . 'adminUser');
-            }
-
+        if ($name == '') {
+            array_push($errors, 'El nombre del usuario es requerido');
         }
+        if ($email == '') {
+            array_push($errors, 'El email es requerido');
+        }
+        if ($status == '') {
+            array_push($errors, 'Selecciona un estado para el usuario');
+        }
+        if (!empty($password1) || !empty($password2)) {
+            if ($password1 != $password2) {
+                array_push($errors, 'Las contraseñas no coinciden');
+            }
+        }
+
+        if (!$errors) {
+            $data = [
+                'id' => $id,
+                'name' => $name,
+                'email' => $email,
+                'password' => $password1,
+                'status' => $status,
+            ];
+            $errors = $this->model->setUser($data);
+            if (!$errors) {
+                header("location:" . ROOT . 'adminUser');
+            } else {
+                $this->edit($id, $errors);
+            }
+        }
+    }
+
+    public function delete($id, $errors = [])
+    {
 
         $user = $this->model->getUserById($id);
         $status = $this->model->getConfig('adminStatus');
@@ -197,5 +179,17 @@ class AdminUserController extends Controller
         ];
 
         $this->view('admin/users/delete', $data);
+    }
+
+    public function destroy($id)
+    {
+        $errors = $this->model->delete($id);
+
+        if (!$errors) {
+            header('location:' . ROOT . 'adminUser');
+            return;
+        }
+
+        $this->delete($id, $errors);
     }
 }
