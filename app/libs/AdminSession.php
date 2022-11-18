@@ -7,7 +7,9 @@ class AdminSession
 
     public function __construct()
     {
-        session_start();
+        if(!isset($_SESSION)){
+            session_start();
+        }
 
         if (isset($_SESSION['admin'])) {
             $this->user = $_SESSION['admin'];
