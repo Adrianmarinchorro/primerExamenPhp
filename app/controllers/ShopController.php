@@ -45,6 +45,14 @@ class ShopController extends Controller
             $userId = $session->getLogin();
         }
 
+        if($back == 'courses') {
+            $mensaje = 'Volver al listado de cursos';
+        } else if( $back == 'books') {
+            $mensaje = 'Volver al listado de libros';
+        } else {
+            $mensaje = 'Volver al listado de productos';
+        }
+
         $product = $this->model->getProductById($id);
 
         $data = [
@@ -55,6 +63,7 @@ class ShopController extends Controller
             'errors' => [],
             'data' => $product,
             'user_id' => $userId,
+            'buttonName' => $mensaje,
         ];
 
         $this->view('shop/show', $data);

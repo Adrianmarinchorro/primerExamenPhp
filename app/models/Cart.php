@@ -72,6 +72,16 @@ class Cart
         return $query->execute($params);
     }
 
+    public function getTypeProduct($productId)
+    {
+        $sql = 'SELECT type FROM products WHERE product_id=:product_id';
+        $query = $this->db->prepare($sql);
+        $params = [
+            ':product_id' => $productId,
+        ];
+        return $query->execute($params);
+    }
+
     public function delete($product, $user)
     {
         $sql = 'DELETE FROM carts WHERE user_id=:user_id AND product_id=:product_id';
